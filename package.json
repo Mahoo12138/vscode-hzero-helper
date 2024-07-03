@@ -1,0 +1,106 @@
+{
+  "name": "vscode-hzero-helper",
+  "displayName": "vscode-hzero-helper",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.84.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "hzero-helper",
+          "title": "Hzero helper",
+          "icon": "resources/logo.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "vscode-hzero-helper.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "vscode-hzero-helper.addColor",
+        "title": "Add Color"
+      },
+      {
+        "command": "vscode-hzero-helper.clearColors",
+        "title": "Clear Colors"
+      },
+      {
+        "command": "vscode-hzero-helper.showCatCodicon",
+        "title": "Show CatCodicon"
+      }
+    ],
+    "views": {
+      "hzero-helper": [
+        {
+          "type": "webview",
+          "id": "test-color",
+          "name": "Test Colors"
+        },
+        {
+          "type": "webview",
+          "id": "hzero-helper.config-view",
+          "name": "Config"
+        },
+        {
+          "id": "intl-scanner",
+          "name": "Intl Scanner"
+        },
+        {
+          "id": "permission-scanner",
+          "name": "Permission Scanner"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "intl-scanner",
+        "contents": "In order to use git features, you can open a folder containing a git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.clone)\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
+        "when": "workbenchState == empty"
+      },
+      {
+        "view": "permission-scanner",
+        "contents": "In order to use git features, you can open a folder containing a git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.clone)\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
+        "when": "workbenchState == empty"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.3",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.84.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@vscode/test-electron": "^2.3.6",
+    "eslint": "^8.52.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@vscode/codicons": "^0.0.35"
+  }
+}
