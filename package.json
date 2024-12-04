@@ -1,6 +1,7 @@
 {
   "name": "vscode-hzero-helper",
   "displayName": "vscode-hzero-helper",
+  "publisher": "mahoo12138",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -9,15 +10,20 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
-  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onCommand:vscode-hzero-helper.helloWorld",
+    "onCommand:vscode-hzero-helper.scanTsxFiles",
+    "onCommand:vscode-hzero-helper.openOAuthPanel",
+    "onUri"
+  ],
+  "main": "dist/extension/index.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
           "id": "hzero-helper",
           "title": "Hzero helper",
-          "icon": "resources/logo.svg"
+          "icon": "public/logo.svg"
         }
       ]
     },
@@ -27,33 +33,24 @@
         "title": "Hello World"
       },
       {
-        "command": "vscode-hzero-helper.addColor",
-        "title": "Add Color"
+        "command": "vscode-hzero-helper.showPage1",
+        "title": "Hello World: showPage1"
       },
       {
-        "command": "vscode-hzero-helper.clearColors",
-        "title": "Clear Colors"
+        "command": "vscode-hzero-helper.scanTsxFiles",
+        "title": "Scan TSX Files"
       },
       {
-        "command": "vscode-hzero-helper.showCatCodicon",
-        "title": "Show CatCodicon"
+        "command": "vscode-hzero-helper.openOAuthPanel",
+        "title": "Open Hzero OAuth Panel"
       }
     ],
     "views": {
       "hzero-helper": [
         {
           "type": "webview",
-          "id": "test-color",
-          "name": "Test Colors"
-        },
-        {
-          "type": "webview",
           "id": "hzero-helper.config-view",
           "name": "Config"
-        },
-        {
-          "id": "intl-scanner",
-          "name": "Intl Scanner"
         },
         {
           "id": "permission-scanner",
@@ -72,35 +69,50 @@
         "contents": "In order to use git features, you can open a folder containing a git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.clone)\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
         "when": "workbenchState == empty"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Hzero Helper",
+      "properties": {
+        "hzeroHelper.token": {
+          "type": "string",
+          "default": "",
+          "description": "Hzero OAuth Token"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@tomjs/vite-plugin-vscode": "^3.1.1",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@types/vscode": "^1.84.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
+    "@vitejs/plugin-vue": "^5.2.1",
     "@vscode/test-electron": "^2.3.6",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
     "ts-loader": "^9.5.0",
     "typescript": "^5.2.2",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "vite": "^6.0.2",
+    "vite-plugin-virtual-mpa": "^1.12.1",
+    "vue-tsc": "^2.1.10"
   },
   "dependencies": {
-    "@vscode/codicons": "^0.0.35"
+    "@vscode/codicons": "^0.0.35",
+    "@vscode/webview-ui-toolkit": "^1.4.0",
+    "pixi.js": "^8.6.3",
+    "vue": "^3.5.13"
   }
 }
