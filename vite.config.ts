@@ -37,7 +37,6 @@ export default defineConfig({
       pages,
       scanOptions: {
         scanDirs: "src/pages",
-        entryFile: "main.ts",
         filename: (name) => `${name}.html`,
       },
       htmlMinify: true,

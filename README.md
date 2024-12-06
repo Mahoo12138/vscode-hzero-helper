@@ -1,4 +1,7 @@
-# vscode-hzero-helper README
+# vscode-hzero-helper
+
++ https://vscode-elements.github.io/
++ https://kermanx.github.io/reactive-vscode/
 
 This is the README for your extension "vscode-hzero-helper". After writing up a brief description, we recommend including the following sections.
 

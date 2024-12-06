@@ -10,9 +10,12 @@ export function activate(context: vscode.ExtensionContext) {
     'Congratulations, your extension "vscode-hzero-helper" is now active!'
   );
 
-  const extensionId = context.extension.id; // 获取插件 ID
+  const extensionId = context.extension.id;
   console.log(`Extension ID: ${extensionId}`);
   vscode.window.showInformationMessage(`Extension ID: ${extensionId}`);
+
+  // 创建权限扫描器提供者实例
+  const permissionScannerProvider = new PermissionScannerProvider();
 
   let disposable = vscode.commands.registerCommand(
     "vscode-hzero-helper.helloWorld",
@@ -25,27 +28,23 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('vscode-hzero-helper.showPage1', async () => {
-      MainPanel.render(context);
+      // 创建面板时传入权限扫描器提供者实例
+      MainPanel.render(context, permissionScannerProvider);
     }),
   );
 
   context.subscriptions.push(disposable);
 
-
   const configView = new ConfigView(context.extensionUri);
 
-
-
-	context.subscriptions.push(
+  context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       ConfigView.viewType,
       configView
     )
   );
 
-
   // 注册权限扫描器视图
-  const permissionScannerProvider = new PermissionScannerProvider();
   context.subscriptions.push(
     vscode.window.registerTreeDataProvider(
       'permission-scanner',

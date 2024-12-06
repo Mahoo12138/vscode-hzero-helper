@@ -30,7 +30,8 @@
     "commands": [
       {
         "command": "vscode-hzero-helper.helloWorld",
-        "title": "Hello World"
+        "title": "Hello World",
+        "icon": "$(book)"
       },
       {
         "command": "vscode-hzero-helper.showPage1",
@@ -55,6 +56,15 @@
         {
           "id": "permission-scanner",
           "name": "Permission Scanner"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "vscode-hzero-helper.helloWorld",
+          "when": "view == hzero-helper.config-view",
+          "group": "navigation"
         }
       ]
     },
@@ -96,6 +106,7 @@
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@types/vscode": "^1.84.0",
+    "@types/vscode-webview": "^1.57.5",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "@vitejs/plugin-vue": "^5.2.1",

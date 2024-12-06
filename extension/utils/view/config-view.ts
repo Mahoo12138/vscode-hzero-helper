@@ -22,6 +22,7 @@ export default class ConfigView implements vscode.WebviewViewProvider {
         };
 
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+        // webviewView.webview.asWebviewUri()
 
         // 处理来自 webview 的消息
         webviewView.webview.onDidReceiveMessage(async (data) => {
@@ -43,7 +44,7 @@ export default class ConfigView implements vscode.WebviewViewProvider {
             title: 'Hzero Helper Config',
             body: `
                 <div class="container">
-                    <h2>Permission Scanner</h2>
+                    <h2>Hzero Helper</h2>
                     <div class="button-container">
                         <button class="button" id="scanButton">
                             <i class="codicon codicon-search"></i>
@@ -57,7 +58,7 @@ export default class ConfigView implements vscode.WebviewViewProvider {
                 </div>
                 <style>
                     .container {
-                        padding: 20px;
+                        padding: 10px;
                     }
                     .button-container {
                         margin-top: 20px;
