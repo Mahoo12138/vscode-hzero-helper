@@ -7,9 +7,11 @@ export class MainPanel {
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
   private _permissionScannerProvider: PermissionScannerProvider;
+  private _context: ExtensionContext;
 
   private constructor(panel: WebviewPanel, context: ExtensionContext, permissionScannerProvider: PermissionScannerProvider) {
     this._panel = panel;
+    this._context = context;
     this._permissionScannerProvider = permissionScannerProvider;
 
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
@@ -21,21 +23,31 @@ export class MainPanel {
         switch (message.type) {
           case 'checkPermissionScannerData':
             // 检查权限扫描器是否有数据
-            const hasData = this._permissionScannerProvider.hasData();
-            return hasData;
+            this._panel.webview.postMessage({
+              type: 'checkPermissionScannerDataResponse',
+              data: this._permissionScannerProvider.hasData()
+            });
+            break;
 
           case 'getPermissionFiles':
             // 获取文件类型的权限项
-            const files = this._permissionScannerProvider.getFileItems();
-            return files;
+            this._panel.webview.postMessage({
+              type: 'getPermissionFilesResponse',
+              data: this._permissionScannerProvider.getFileItems()
+            });
+            break;
 
           case 'showQuickPick':
             // 显示选择框
             const selected = await window.showQuickPick(message.items, {
               placeHolder: '请选择要导入的文件'
             });
-            return selected ? selected.value : null;
 
+            this._panel.webview.postMessage({
+              type: 'showQuickPickResponse',
+              data: selected ? selected.value : null
+            });
+            break;
           case 'showMessage':
             // 显示消息
             switch (message.level) {
@@ -61,7 +73,30 @@ export class MainPanel {
       this._disposables
     );
 
+    this._panel.webview.onDidReceiveMessage(this._handleWebviewMessage.bind(this));
+
     WebviewHelper.setupWebviewHooks(this._panel.webview, this._disposables);
+  }
+
+  private _handleWebviewMessage(message: any) {
+    switch (message.type) {
+      case 'checkPermissionScannerData':
+        this._panel.webview.postMessage({
+          type: 'checkPermissionScannerDataResponse',
+          data: this._permissionScannerProvider.hasData()
+        });
+        break;
+      case 'getPermissionFiles':
+        this._panel.webview.postMessage({
+          type: 'getPermissionFilesResponse',
+          data: this._permissionScannerProvider.getFileItems()
+        });
+        break;
+    }
+  }
+
+  private _getWebviewContent() {
+    return WebviewHelper.setupHtml(this._panel.webview, this._context, 'hzero-panel.html');
   }
 
   public static render(context: ExtensionContext, permissionScannerProvider: PermissionScannerProvider) {

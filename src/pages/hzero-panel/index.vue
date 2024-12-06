@@ -168,8 +168,15 @@ const handleImportPermission = async () => {
   importing.value = true;
   try {
     // 1. 检查权限扫描器数据
-    const hasData = await vscode.postMessage({
-      type: '`checkPermissionScannerData`'
+    const hasData = await new Promise((resolve) => {
+      vscode.postMessage({ type: 'checkPermissionScannerData' });
+
+      window.addEventListener('message', function handler(event) {
+        if (event.data.type === 'checkPermissionScannerDataResponse') {
+          window.removeEventListener('message', handler);
+          resolve(event.data.data);
+        }
+      });
     });
 
     if (!hasData) {
@@ -182,18 +189,33 @@ const handleImportPermission = async () => {
     }
 
     // 2. 获取文件列表供选择
-    const fileItems = await vscode.postMessage({
-      type: 'getPermissionFiles'
-    });
+    const fileItems = await new Promise((resolve) => {
+      vscode.postMessage({ type: 'getPermissionFiles' });
 
-    // 3. 显示选择框
-    const selectedFile = await vscode.postMessage({
-      type: 'showQuickPick',
-      items: fileItems.map((item: PermissionTreeItem) => ({
-        label: item.label,
-        value: item
-      }))
+      window.addEventListener('message', function handler(event) {
+        if (event.data.type === 'getPermissionFilesResponse') {
+          window.removeEventListener('message', handler);
+          resolve(event.data.data);
+        }
+      });
     });
+    const selectedFile = await new Promise((resolve) => {
+      // 3. 显示选择框
+      vscode.postMessage({
+        type: 'showQuickPick',
+        items: fileItems.map((item: PermissionTreeItem) => ({
+          label: item.label,
+          value: item
+        }))
+      });
+      window.addEventListener('message', function handler(event) {
+        if (event.data.type === 'showQuickPickResponse') {
+          window.removeEventListener('message', handler);
+          resolve(event.data.data);
+        }
+      });
+    })
+
 
     if (!selectedFile) return;
 
@@ -265,14 +287,8 @@ onMounted(() => {
   <main>
     <!-- 搜索区域 -->
     <div class="search-area">
-      <vscode-text-field
-        v-model="searchQuery"
-        placeholder="请输入搜索内容"
-      ></vscode-text-field>
-      <vscode-button
-        @click="handleSearch"
-        :disabled="loading"
-      >
+      <vscode-text-field v-model="searchQuery" placeholder="请输入搜索内容"></vscode-text-field>
+      <vscode-button @click="handleSearch" :disabled="loading">
         {{ loading ? '搜索中...' : '搜索' }}
       </vscode-button>
     </div>
@@ -285,13 +301,8 @@ onMounted(() => {
         <div class="list-content">
           <div v-if="loading" class="loading">加载中...</div>
           <template v-else>
-            <div
-              v-for="item in leftListData"
-              :key="item.id"
-              class="menu-item"
-              :class="{ active: selectedItem?.id === item.id }"
-              @click="handleSelectItem(item)"
-            >
+            <div v-for="item in leftListData" :key="item.id" class="menu-item"
+              :class="{ active: selectedItem?.id === item.id }" @click="handleSelectItem(item)">
               <div class="menu-name">{{ item.name }}</div>
               <div class="menu-route">{{ item.route }}</div>
             </div>
@@ -307,11 +318,7 @@ onMounted(() => {
         <div class="right-section">
           <div class="section-header">
             <h3>详细信息</h3>
-            <vscode-button
-              v-if="selectedItem"
-              @click="handleImportPermission"
-              :disabled="importing"
-            >
+            <vscode-button v-if="selectedItem" @click="handleImportPermission" :disabled="importing">
               {{ importing ? '导入中...' : '导入权限' }}
             </vscode-button>
           </div>

@@ -18,7 +18,7 @@ export class PermissionScannerProvider implements vscode.TreeDataProvider<Permis
 
     private filePermissions: FilePermissions[] = [];
 
-    constructor() {}
+    constructor() { }
 
     refresh(data: FilePermissions[]): void {
         this.filePermissions = data;
@@ -102,7 +102,7 @@ export class PermissionScannerProvider implements vscode.TreeDataProvider<Permis
     }
 }
 
-class PermissionTreeItem extends vscode.TreeItem {
+export class PermissionTreeItem extends vscode.TreeItem {
     constructor(
         public readonly label: string,
         public readonly filePath: string,
