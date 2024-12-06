@@ -1,6 +1,6 @@
 import { Disposable, ExtensionContext, ViewColumn, WebviewPanel, window } from 'vscode';
 import { WebviewHelper } from './helper';
-import { PermissionScannerProvider } from '../utils/view/permission-scanner-view';
+import { PermissionScannerProvider } from './permission-scanner-view';
 
 export class MainPanel {
   public static currentPanel: MainPanel | undefined;
@@ -15,7 +15,7 @@ export class MainPanel {
     this._permissionScannerProvider = permissionScannerProvider;
 
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-    this._panel.webview.html = WebviewHelper.setupHtml(this._panel.webview, context, 'hzero-panel.html');
+    this._panel.webview.html = this._getWebviewContent();
 
     // 设置消息处理
     this._panel.webview.onDidReceiveMessage(
@@ -96,11 +96,10 @@ export class MainPanel {
   }
 
   private _getWebviewContent() {
-    return WebviewHelper.setupHtml(this._panel.webview, this._context, 'hzero-panel.html');
+    return WebviewHelper.setupHtml(this._panel.webview, this._context, 'hzero-panel');
   }
 
   public static render(context: ExtensionContext, permissionScannerProvider: PermissionScannerProvider) {
-    console.log('MainPanel render');
     if (MainPanel.currentPanel) {
       MainPanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {

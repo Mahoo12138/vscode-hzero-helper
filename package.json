@@ -34,12 +34,16 @@
         "icon": "$(book)"
       },
       {
+        "command": "vscode-hzero-helper.create-env",
+        "title": "Create a new Env"
+      },
+      {
         "command": "vscode-hzero-helper.showPage1",
         "title": "Hello World: showPage1"
       },
       {
         "command": "vscode-hzero-helper.scanTsxFiles",
-        "title": "Scan TSX Files"
+        "title": "Scan Permission"
       },
       {
         "command": "vscode-hzero-helper.openOAuthPanel",
@@ -87,6 +91,16 @@
           "type": "string",
           "default": "",
           "description": "Hzero OAuth Token"
+        },
+        "hzeroHelper.env": {
+          "type": "array",
+          "default": [],
+          "description": "Hzero Platform Env"
+        },
+        "hzeroHelper.currentEnv": {
+          "type": "string",
+          "default": "",
+          "description": "Current Selected Hzero Environment"
         }
       }
     }

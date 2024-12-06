@@ -13,6 +13,13 @@ const pages = createPages([
     },
   },
   {
+    name: "hzero-oauth",
+    entry: "/src/pages/hzero-oauth/main.ts",
+    data: {
+      title: "Hzero Oauth",
+    },
+  },
+  {
     name: "demo",
     entry: "/src/pages/demo/main.ts",
     data: {

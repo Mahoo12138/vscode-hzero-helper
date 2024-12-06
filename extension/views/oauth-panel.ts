@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { getHtml } from '../html';
 
 export class OAuthPanel {
     public static currentPanel: OAuthPanel | undefined;

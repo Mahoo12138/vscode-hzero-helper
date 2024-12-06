@@ -4,7 +4,7 @@ export class WebviewHelper {
   public static setupHtml(webview: Webview, context: ExtensionContext, target: string) {
     return process.env.VITE_DEV_SERVER_URL
       ? __getWebviewHtml__(process.env.VITE_DEV_SERVER_URL + target)
-      : __getWebviewHtml__(webview, context);
+      : __getWebviewHtml__(webview, context, target);
   }
 
   public static setupWebviewHooks(webview: Webview, disposables: Disposable[]) {

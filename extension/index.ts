@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import ConfigView from './utils/view/config-view';
 import { TsxScanner } from './tsxScanner';
-import { PermissionScannerProvider } from './utils/view/permission-scanner-view';
-import { OAuthPanel } from './utils/view/oauth-panel';
+import ConfigView from './views/config-view';
+import { PermissionScannerProvider } from './views/permission-scanner-view';
+import { OAuthPanel } from './views/oauth-panel';
 import { MainPanel } from './views/panel';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -14,17 +14,86 @@ export function activate(context: vscode.ExtensionContext) {
   console.log(`Extension ID: ${extensionId}`);
   vscode.window.showInformationMessage(`Extension ID: ${extensionId}`);
 
-  // 创建权限扫描器提供者实例
-  const permissionScannerProvider = new PermissionScannerProvider();
 
-  let disposable = vscode.commands.registerCommand(
+  context.subscriptions.push(vscode.commands.registerCommand(
     "vscode-hzero-helper.helloWorld",
     () => {
       vscode.window.showInformationMessage(
         "Hello VS Code from vscode-hzero-helper!"
       );
     }
-  );
+  ));
+
+  context.subscriptions.push(vscode.commands.registerCommand(
+    "vscode-hzero-helper.create-env",
+    async () => {
+      // 获取环境名称
+      const name = await vscode.window.showInputBox({
+        prompt: "请输入环境名称",
+        placeHolder: "例如: dev, test, prod",
+        validateInput: (value) => {
+          if (!value) {
+            return "环境名称不能为空";
+          }
+          return null;
+        }
+      });
+
+      if (!name) {
+        return; // 用户取消了输入
+      }
+
+      // 获取环境地址
+      const host = await vscode.window.showInputBox({
+        prompt: "请输入环境地址",
+        placeHolder: "例如: https://demo.56mada.com:8443",
+        validateInput: (value) => {
+          if (!value) {
+            return "环境地址不能为空";
+          }
+          try {
+            new URL(value);
+            return null;
+          } catch {
+            return "请输入有效的URL地址";
+          }
+        }
+      });
+
+      if (!host) {
+        return; // 用户取消了输入
+      }
+
+      // 获取当前配置
+      const config = vscode.workspace.getConfiguration("hzeroHelper");
+      const currentEnv = config.get<Array<{name: string, host: string}>>("env") || [];
+
+      // 检查是否存在相同名称的环境
+      const existingIndex = currentEnv.findIndex(env => env.name === name);
+      if (existingIndex !== -1) {
+        const action = await vscode.window.showWarningMessage(
+          `环境 "${name}" 已存在，是否覆盖？`,
+          "覆盖",
+          "取消"
+        );
+        if (action === "覆盖") {
+          currentEnv[existingIndex] = { name, host };
+        } else {
+          return;
+        }
+      } else {
+        // 添加新环境
+        currentEnv.push({ name, host });
+      }
+
+      // 更新配置
+      await config.update("env", currentEnv, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(`环境 "${name}" 已成功${existingIndex !== -1 ? '更新' : '添加'}`);
+    }
+  ));
+
+  // 创建权限扫描器提供者实例
+  const permissionScannerProvider = new PermissionScannerProvider();
 
   context.subscriptions.push(
     vscode.commands.registerCommand('vscode-hzero-helper.showPage1', async () => {
@@ -33,10 +102,11 @@ export function activate(context: vscode.ExtensionContext) {
     }),
   );
 
-  context.subscriptions.push(disposable);
 
-  const configView = new ConfigView(context.extensionUri);
 
+  const configView = new ConfigView(context);
+
+  // 注册配置页面
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       ConfigView.viewType,
@@ -83,4 +153,4 @@ export function activate(context: vscode.ExtensionContext) {
   });
 }
 
-export function deactivate() {}
+export function deactivate() { }
