@@ -26,6 +26,7 @@ interface PermissionSet {
 
 interface PermissionTreeItem {
   label: string;
+  path: string;
   type: 'file' | 'permission';
   code: string;
   meaning?: string;
@@ -189,7 +190,7 @@ const handleImportPermission = async () => {
     }
 
     // 2. 获取文件列表供选择
-    const fileItems = await new Promise((resolve) => {
+    const fileItems = await new Promise<PermissionTreeItem>((resolve) => {
       vscode.postMessage({ type: 'getPermissionFiles' });
 
       window.addEventListener('message', function handler(event) {
@@ -205,6 +206,7 @@ const handleImportPermission = async () => {
         type: 'showQuickPick',
         items: fileItems.map((item: PermissionTreeItem) => ({
           label: item.label,
+          description: item.path,
           value: item
         }))
       });

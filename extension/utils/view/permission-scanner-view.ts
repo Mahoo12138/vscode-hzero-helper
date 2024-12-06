@@ -31,9 +31,10 @@ export class PermissionScannerProvider implements vscode.TreeDataProvider<Permis
     }
 
     // 获取文件类型的权限项
-    getFileItems(): any[] {
+    getFileItems() {
         return this.filePermissions.map(fp => ({
             label: path.basename(fp.filePath),
+            path: fp.filePath,
             type: 'file',
             code: path.basename(fp.filePath, path.extname(fp.filePath)),
             children: fp.permissions.map(perm => ({
