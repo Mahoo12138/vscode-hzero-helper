@@ -87,11 +87,6 @@
     "configuration": {
       "title": "Hzero Helper",
       "properties": {
-        "hzeroHelper.token": {
-          "type": "string",
-          "default": "",
-          "description": "Hzero OAuth Token"
-        },
         "hzeroHelper.env": {
           "type": "array",
           "default": [],

@@ -47,7 +47,27 @@ export default class ConfigView implements vscode.WebviewViewProvider {
                 vscode.commands.executeCommand('vscode-hzero-helper.openOAuthPanel');
                 break;
             case 'CREATE_ENV':
-                vscode.commands.executeCommand('vscode-hzero-helper.create-env');
+                try {
+                    // 执行创建环境命令并等待完成
+                    await vscode.commands.executeCommand('vscode-hzero-helper.create-env');
+                    
+                    // 重新获取最新的环境列表
+                    const updatedConfig = vscode.workspace.getConfiguration('hzeroHelper');
+                    const updatedEnv = updatedConfig.get<Array<{ name: string, host: string }>>('env') || [];
+                    
+                    // 返回最新的环境列表
+                    this.handleResponse(type, { 
+                        env: updatedEnv,
+                        message: '环境创建成功' 
+                    });
+                } catch (error) {
+                    console.error('创建环境失败:', error);
+                    this.handleResponse(type, { 
+                        env: [],
+                        message: '环境创建失败',
+                        error: error instanceof Error ? error.message : String(error)
+                    });
+                }
                 break;
             case 'GET_ENV_LIST':
                 const config = vscode.workspace.getConfiguration('hzeroHelper');

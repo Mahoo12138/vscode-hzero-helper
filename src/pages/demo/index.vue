@@ -6,9 +6,7 @@ import '@vscode/codicons/dist/codicon.css';
 
 import { VSCodeMessenger } from '../../utils';
 
-
 provideVSCodeDesignSystem().register(allComponents);
-
 
 const envList = ref<Array<{name: string, host: string}>>([]);
 const currentEnv = ref('');
@@ -24,8 +22,47 @@ const handleEnvChange = async (event: Event) => {
   currentEnv.value = newEnv;
 };
 
-const handleCreateEnv = () => {
-  messenger.sendMessage('CREATE_ENV');
+const handleCreateEnv = async () => {
+  try {
+    // 发送创建环境命令并获取返回的环境列表
+    const result = await messenger.sendMessage<{
+      env: Array<{name: string, host: string}>, 
+      message: string, 
+      error?: string
+    }>('CREATE_ENV');
+
+    console.log('Create env result:', result);
+
+    // 更新环境列表
+    if (result.env && result.env.length > 0) {
+      envList.value = result.env;
+      
+      // 如果当前环境为空，设置第一个为当前环境
+      if (!currentEnv.value) {
+        const firstEnv = result.env[0].name;
+        await messenger.sendMessage('UPDATE_CURRENT_ENV', { env: firstEnv });
+        currentEnv.value = firstEnv;
+      }
+
+      // 显示成功消息
+      await messenger.sendMessage('showMessage', {
+        level: 'info', 
+        message: result.message || '环境创建成功'
+      });
+    } else {
+      // 显示错误消息
+      await messenger.sendMessage('showMessage', {
+        level: 'error', 
+        message: result.error || '环境创建失败'
+      });
+    }
+  } catch (error) {
+    console.error('Error creating environment:', error);
+    await messenger.sendMessage('showMessage', {
+      level: 'error', 
+      message: '创建环境时发生错误'
+    });
+  }
 };
 
 onMounted(async () => {
