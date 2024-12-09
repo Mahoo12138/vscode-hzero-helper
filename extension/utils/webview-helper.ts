@@ -1,4 +1,5 @@
 import { Disposable, ExtensionContext, Webview, WebviewPanel, window } from 'vscode';
+import { MSG_SUFFIX } from '../constants';
 
 export class WebviewHelper {
   public static setupHtml(webview: Webview, context: ExtensionContext, target: string) {
@@ -23,7 +24,7 @@ export namespace WebviewHelper {
     abstract handleWebviewMessage(message: any): any;
 
     handleMessageResonse(type: string, data: any) {
-      this.panel.webview.postMessage({ type: `${type}_Response`, data });
+      this.panel.webview.postMessage({ type: `${type}${MSG_SUFFIX}`, data });
     }
     getWebviewContent() {
       return WebviewHelper.setupHtml(this.panel.webview, this.context, this.name);

@@ -1,5 +1,7 @@
 export const vscode = acquireVsCodeApi();
 
+export const MSG_SUFFIX = '_Response';
+
 export class VSCodeMessenger {
   private readonly listeners = new Map<string, (data: any) => void>();
   private readonly persistentListeners = new Map<string, Array<(data: any) => void>>();
@@ -25,7 +27,7 @@ export class VSCodeMessenger {
 
   sendMessage<T>(type: string, payload?: any): Promise<T> {
     return new Promise<T>((resolve) => {
-      this.listeners.set(`${type}_Response`, resolve);
+      this.listeners.set(`${type}${MSG_SUFFIX}`, resolve);
       vscode.postMessage({ type, data: payload, resp: true });
     });
   }

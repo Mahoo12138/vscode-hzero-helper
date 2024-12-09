@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { WebviewHelper } from '../utils/webview-helper';
 import { ExtensionContext } from 'vscode';
+import { MSG_SUFFIX } from '../constants';
 
 export default class ConfigView implements vscode.WebviewViewProvider {
     public static readonly viewType = 'hzero-helper.config-view';
@@ -97,7 +98,7 @@ export default class ConfigView implements vscode.WebviewViewProvider {
 
     private handleResponse(type: string, data: any) {
         if (this.view) {
-            this.view.webview.postMessage({ type: `${type}Response`, data });
+            this.view.webview.postMessage({ type: `${type}${MSG_SUFFIX}`, data });
         }
     }
 }
