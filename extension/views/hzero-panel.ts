@@ -1,9 +1,9 @@
 import { Disposable, ExtensionContext, ViewColumn, WebviewPanel, window } from 'vscode';
-import { WebviewHelper } from './helper';
+import { WebviewHelper } from '../utils/webview-helper';
 import { PermissionScannerProvider } from './permission-scanner-view';
 
-export class MainPanel {
-  public static currentPanel: MainPanel | undefined;
+export class HzeroPanel {
+  public static currentPanel: HzeroPanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
   private _permissionScannerProvider: PermissionScannerProvider;
@@ -100,15 +100,15 @@ export class MainPanel {
   }
 
   public static render(context: ExtensionContext, permissionScannerProvider: PermissionScannerProvider) {
-    if (MainPanel.currentPanel) {
-      MainPanel.currentPanel._panel.reveal(ViewColumn.One);
+    if (HzeroPanel.currentPanel) {
+      HzeroPanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
-      const panel = window.createWebviewPanel('showPage1', '权限管理', ViewColumn.One, {
+      const panel = window.createWebviewPanel('hzero-panel', '权限管理', ViewColumn.One, {
         enableScripts: true,
         retainContextWhenHidden: true
       });
 
-      MainPanel.currentPanel = new MainPanel(panel, context, permissionScannerProvider);
+      HzeroPanel.currentPanel = new HzeroPanel(panel, context, permissionScannerProvider);
     }
   }
 
@@ -116,7 +116,7 @@ export class MainPanel {
    * Cleans up and disposes of webview resources when the webview panel is closed.
    */
   public dispose() {
-    MainPanel.currentPanel = undefined;
+    HzeroPanel.currentPanel = undefined;
 
     // Dispose of the current webview panel
     this._panel.dispose();

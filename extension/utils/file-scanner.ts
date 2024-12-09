@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { PermissionScannerProvider } from './views/permission-scanner-view';
+import { PermissionScannerProvider } from '../views/permission-scanner-view';
 
 interface Permission {
     code: string;

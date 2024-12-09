@@ -26,8 +26,8 @@ const handleCreateEnv = async () => {
   try {
     // 发送创建环境命令并获取返回的环境列表
     const result = await messenger.sendMessage<{
-      env: Array<{name: string, host: string}>, 
-      message: string, 
+      env: Array<{name: string, host: string}>,
+      message: string,
       error?: string
     }>('CREATE_ENV');
 
@@ -36,7 +36,7 @@ const handleCreateEnv = async () => {
     // 更新环境列表
     if (result.env && result.env.length > 0) {
       envList.value = result.env;
-      
+
       // 如果当前环境为空，设置第一个为当前环境
       if (!currentEnv.value) {
         const firstEnv = result.env[0].name;
@@ -46,20 +46,20 @@ const handleCreateEnv = async () => {
 
       // 显示成功消息
       await messenger.sendMessage('showMessage', {
-        level: 'info', 
+        level: 'info',
         message: result.message || '环境创建成功'
       });
     } else {
       // 显示错误消息
       await messenger.sendMessage('showMessage', {
-        level: 'error', 
+        level: 'error',
         message: result.error || '环境创建失败'
       });
     }
   } catch (error) {
     console.error('Error creating environment:', error);
     await messenger.sendMessage('showMessage', {
-      level: 'error', 
+      level: 'error',
       message: '创建环境时发生错误'
     });
   }
@@ -71,12 +71,12 @@ onMounted(async () => {
     const envData = await messenger.sendMessage<{env: Array<{name: string, host: string}>}>('GET_ENV_LIST');
     console.log('Received env data:', envData);
     envList.value = envData.env || [];
-    
+
     // 获取当前环境
     const currentEnvData = await messenger.sendMessage<string>('GET_CURRENT_ENV');
     console.log('Received current env:', currentEnvData);
     currentEnv.value = currentEnvData || '';
-    
+
     // 如果当前环境为空且有环境列表，设置第一个为当前环境
     if (!currentEnv.value && envList.value.length > 0) {
       const firstEnv = envList.value[0].name;
@@ -89,7 +89,11 @@ onMounted(async () => {
 });
 
 const handleScan = () => {
-  messenger.sendMessage('scan');
+  messenger.sendMessage('SCAN');
+}
+
+const handleHzeroPanel = () => {
+
 }
 
 </script>
@@ -102,18 +106,18 @@ const handleScan = () => {
       <p>Choose env</p>
       <section class="env-selection">
         <div class="option-panel">
-          <vscode-dropdown 
-            :disabled="disabled" 
-            position="below" 
+          <vscode-dropdown
+            :disabled="disabled"
+            position="below"
             style="flex: 1"
             :value="currentEnv"
             @change="handleEnvChange"
           >
             <span slot="indicator" class="codicon codicon-settings"></span>
             <vscode-option v-if="disabled">No Env</vscode-option>
-            <vscode-option 
-              v-else 
-              v-for="env in envList" 
+            <vscode-option
+              v-else
+              v-for="env in envList"
               :key="env.name"
               :value="env.name"
             >
@@ -132,7 +136,7 @@ const handleScan = () => {
         <vscode-button @click="handleScan">
           Scan Permission
         </vscode-button>
-        <vscode-button id="oauthButton">
+        <vscode-button @click="handleHzeroPanel">
           Open Hzero Panel
         </vscode-button>
       </section>

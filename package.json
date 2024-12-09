@@ -11,9 +11,6 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-hzero-helper.helloWorld",
-    "onCommand:vscode-hzero-helper.scanTsxFiles",
-    "onCommand:vscode-hzero-helper.openOAuthPanel",
     "onUri"
   ],
   "main": "dist/extension/index.js",
@@ -38,16 +35,12 @@
         "title": "Create a new Env"
       },
       {
-        "command": "vscode-hzero-helper.showPage1",
-        "title": "Hello World: showPage1"
-      },
-      {
         "command": "vscode-hzero-helper.scanTsxFiles",
         "title": "Scan Permission"
       },
       {
-        "command": "vscode-hzero-helper.openOAuthPanel",
-        "title": "Open Hzero OAuth Panel"
+        "command": "vscode-hzero-helper.open-hzero-panel",
+        "title": "Open Hzero Panel"
       }
     ],
     "views": {

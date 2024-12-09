@@ -1,28 +1,11 @@
 import * as vscode from "vscode";
-import { TsxScanner } from './tsxScanner';
+import { TsxScanner } from './utils/file-scanner';
 import ConfigView from './views/config-view';
 import { PermissionScannerProvider } from './views/permission-scanner-view';
 import { OAuthPanel } from './views/oauth-panel';
-import { MainPanel } from './views/panel';
+import { HzeroPanel } from './views/hzero-panel';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log(
-    'Congratulations, your extension "vscode-hzero-helper" is now active!'
-  );
-
-  const extensionId = context.extension.id;
-  console.log(`Extension ID: ${extensionId}`);
-  vscode.window.showInformationMessage(`Extension ID: ${extensionId}`);
-
-
-  context.subscriptions.push(vscode.commands.registerCommand(
-    "vscode-hzero-helper.helloWorld",
-    () => {
-      vscode.window.showInformationMessage(
-        "Hello VS Code from vscode-hzero-helper!"
-      );
-    }
-  ));
 
   context.subscriptions.push(vscode.commands.registerCommand(
     "vscode-hzero-helper.create-env",
@@ -98,10 +81,9 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('vscode-hzero-helper.showPage1', async () => {
       // 创建面板时传入权限扫描器提供者实例
-      MainPanel.render(context, permissionScannerProvider);
+      HzeroPanel.render(context, permissionScannerProvider);
     }),
   );
-
 
 
   const configView = new ConfigView(context);
@@ -130,10 +112,11 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  // 注册打开 OAuth 面板命令
+  // 注册打开 Hzero 面板命令
   context.subscriptions.push(
-    vscode.commands.registerCommand("vscode-hzero-helper.openOAuthPanel", () => {
-      OAuthPanel.createOrShow(context.extensionUri);
+    vscode.commands.registerCommand("vscode-hzero-helper.open-hzero-panel", () => {
+      // OAuthPanel.createOrShow(context.extensionUri);
+
     })
   );
 

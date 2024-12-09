@@ -54,7 +54,7 @@ export class OAuthPanel {
         this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
     }
 
-    public static createOrShow(extensionUri: vscode.Uri) {
+    public static render(extensionUri: vscode.Uri) {
         const column = vscode.window.activeTextEditor
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
