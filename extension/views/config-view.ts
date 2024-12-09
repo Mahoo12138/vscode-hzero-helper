@@ -33,18 +33,20 @@ export default class ConfigView implements vscode.WebviewViewProvider {
         webviewView.webview.onDidReceiveMessage(this.handleMessage.bind(this));
     }
 
-    private async handleMessage(message: { type: string; data?: any }) {
-        const { type, data } = message;
+    private async handleMessage(message: { type: string; data?: any, resp: any }) {
+        const { type, data, resp } = message;
         console.log('Received message:', type, data);
-
+        let res: any = null;
         switch (type) {
             case 'SCAN':
                 // 触发扫描命令
-                vscode.commands.executeCommand('vscode-hzero-helper.scanTsxFiles');
+                await vscode.commands.executeCommand('vscode-hzero-helper.scan-permission');
+                res = { message: '操作成功' };
                 break;
-            case 'OPEN_OAUTH':
+            case 'OPEN_HZERO_OAUTH':
                 // 触发打开 OAuth 面板命令
-                vscode.commands.executeCommand('vscode-hzero-helper.open-hzero-panel');
+                await vscode.commands.executeCommand('vscode-hzero-helper.open-hzero-panel');
+                res = { message: '操作成功' };
                 break;
             case 'CREATE_ENV':
                 try {
@@ -73,23 +75,23 @@ export default class ConfigView implements vscode.WebviewViewProvider {
                 const config = vscode.workspace.getConfiguration('hzeroHelper');
                 const env = config.get<Array<{ name: string, host: string }>>('env') || [];
                 console.log('Sending env list:', env);
-                this.handleResponse(type, { env });
+                res = { env };
                 break;
             case 'GET_CURRENT_ENV':
                 const currentConfig = vscode.workspace.getConfiguration('hzeroHelper');
-                const currentEnv = currentConfig.get<string>('currentEnv') || '';
-                console.log('Sending current env:', currentEnv);
-                this.handleResponse(type, currentEnv);
+                res = currentConfig.get<string>('currentEnv') || '';
                 break;
             case 'UPDATE_CURRENT_ENV':
                 if (data?.env) {
                     const config = vscode.workspace.getConfiguration('hzeroHelper');
                     await config.update('currentEnv', data.env, vscode.ConfigurationTarget.Global);
-                    console.log('Updated current env to:', data.env);
                 }
                 break;
             default:
                 console.warn(`Unhandled message type: ${type}`);
+        }
+        if (resp) {
+            this.handleResponse(type, res);
         }
     }
 

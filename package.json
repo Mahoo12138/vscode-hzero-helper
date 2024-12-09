@@ -35,7 +35,7 @@
         "title": "Create a new Env"
       },
       {
-        "command": "vscode-hzero-helper.scanTsxFiles",
+        "command": "vscode-hzero-helper.scan-permission",
         "title": "Scan Permission"
       },
       {

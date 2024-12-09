@@ -13,17 +13,17 @@ const pages = createPages([
     },
   },
   {
-    name: "hzero-oauth",
-    entry: "/src/pages/hzero-oauth/main.ts",
+    name: "oauth-panel",
+    entry: "/src/pages/oauth-panel/main.ts",
     data: {
       title: "Hzero Oauth",
     },
   },
   {
-    name: "demo",
-    entry: "/src/pages/demo/main.ts",
+    name: "config-view",
+    entry: "/src/pages/config-view/main.ts",
     data: {
-      title: "Demo page",
+      title: "Config View",
     },
   },
 ]);

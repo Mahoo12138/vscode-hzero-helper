@@ -49,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       // 获取当前配置
       const config = vscode.workspace.getConfiguration("hzeroHelper");
-      const currentEnv = config.get<Array<{name: string, host: string}>>("env") || [];
+      const currentEnv = config.get<Array<{ name: string, host: string }>>("env") || [];
 
       // 检查是否存在相同名称的环境
       const existingIndex = currentEnv.findIndex(env => env.name === name);
@@ -106,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // 注册扫描命令
   context.subscriptions.push(
-    vscode.commands.registerCommand("vscode-hzero-helper.scanTsxFiles", async () => {
+    vscode.commands.registerCommand("vscode-hzero-helper.scan-permission", async () => {
       const scanner = new TsxScanner();
       await scanner.scan(permissionScannerProvider);
     })
@@ -115,8 +115,35 @@ export function activate(context: vscode.ExtensionContext) {
   // 注册打开 Hzero 面板命令
   context.subscriptions.push(
     vscode.commands.registerCommand("vscode-hzero-helper.open-hzero-panel", () => {
-      // OAuthPanel.createOrShow(context.extensionUri);
+      // 获取配置
+      const config = vscode.workspace.getConfiguration('hzeroHelper');
+      const envList = config.get<Array<{ name: string, host: string, token?: string }>>('env') || [];
+      const currentEnv = config.get<string>('currentEnv') || '';
 
+      // 检查环境列表是否为空
+      if (envList.length === 0) {
+        vscode.window.showErrorMessage('请先添加"操作环境"');
+        return;
+      }
+
+      // 确定当前环境
+      let selectedEnv = envList.find(env => env.name === currentEnv);
+
+      // 如果当前环境为空，选择第一个环境
+      if (!selectedEnv) {
+        selectedEnv = envList[0];
+        // 更新当前环境配置
+        config.update('currentEnv', selectedEnv.name, vscode.ConfigurationTarget.Global);
+      }
+
+      // 检查 token
+      if (!selectedEnv.token) {
+        // 打开 OAuth 面板
+        OAuthPanel.render(context);
+      } else {
+        // 打开 Hzero 面板
+        HzeroPanel.render(context, permissionScannerProvider);
+      }
     })
   );
 

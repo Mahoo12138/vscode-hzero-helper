@@ -1,12 +1,9 @@
 <script setup lang="ts">
 
 import { computed, onMounted, ref } from 'vue';
-import { allComponents, provideVSCodeDesignSystem } from '@vscode/webview-ui-toolkit';
-import '@vscode/codicons/dist/codicon.css';
 
 import { VSCodeMessenger } from '../../utils';
 
-provideVSCodeDesignSystem().register(allComponents);
 
 const envList = ref<Array<{name: string, host: string}>>([]);
 const currentEnv = ref('');
@@ -93,7 +90,7 @@ const handleScan = () => {
 }
 
 const handleHzeroPanel = () => {
-
+  messenger.sendMessage('OPEN_HZERO_OAUTH');
 }
 
 </script>
